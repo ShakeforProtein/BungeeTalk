@@ -1,0 +1,66 @@
+General:
+  Messages:
+    Badge: "&3&l[&2BungeeTalk&3&l]&r"
+    Commands:
+      Wins:
+        Success:
+          DisplayWinsOwn: 'You have a total of %wins% in this game mode %withtime% %time%!'
+          DisplayWinsOther: '%other% has won %wins% times %withtime% %time%'
+          DisplayFastestOwn: 'Your fastest time was: %time%'
+          DisplayFastestOther: '%other%''s fastest completion time was: %time$'
+          DisplayTopWinsTitle: 'Top 10 by total wins'
+          DisplayTopWinsHeaders: '[Rank] - [Player]     - [Total Wins] -    [Best Time]'
+          DisplayTopWinsFormat: '$position% - %other% - Total Wins: %wins% - Best Time: %time%'
+          DisplayTopSpeed: 'Top 10 by speed'
+          DisplayTopSoeedHeaders: '[Rank] - [Player]     - [Best Time] -    [Total Wins]'
+          DisplayTopSpeedFormat: '$position% - %other% - Best Time: %time% - Total Wins: %wins%'
+          WithTime: 'with a fastest time of'
+        Errors:
+          NotPlayer: 'This command requires additional arguments to use from console.'
+          NoManager: 'Unable to determine game manager for Game mode:'
+          MissingConfig: 'Unable to find config for Game mode:'
+          NoLeaderboard: 'Unable to locate leaderboard for Game mode:'
+          UnknownGameMode: 'Unknown Game Mode:'
+          ReadError: 'Unable to obtain leaderboard values'
+          IncorrectUsage: 'Unable to determine what values you were looking for.'
+Games:
+  Unscramble:
+    Filename: 'unscramble.yml'
+    LeaderboardFile: 'unscrambleLeaderboard.yml'
+    Messages:
+      Badge: '&3&l[&2Shake Scramble&3&l]&r'
+      Winner: '%winner% has won, with a time of %value%'
+      NoWinner: 'Nobody typed the word %answer% fast enough.'
+      GameStart: 'is starting, first to unscramble &c%word% &rwins!! You have %gamelength% seconds!'
+    Settings:
+      GameLength: 30
+      Frequency: 900
+      StartOffset: 600
+      MinimumPlayers: 2
+    Rewards:
+      - 'BCCommand:say Proxy says nice'
+      - 'SPCommand:say pay %player% 1'
+      - 'IRON_INGOT,10'
+  SpeedTyper:
+    Filename: 'speedTyper.yml'
+    LeaderboardFile: 'speedTyperLeaderboard.yml'
+    Messages:
+      Badge: '&3&l[&Treebo Typer&3&l]&r'
+      Winner: '%winner% has won, with a time of %value%'
+      NoWinner: 'Nobody typed the word %answer% fast enough.'
+      GameStart: 'is starting, first to type &c%word% &rwins!! You have %gamelength% seconds!'
+    Settings:
+      GameLength: 30
+      Frequency: 900
+      StartOffset: 300
+      MinimumPlayers: 2
+    Rewards:
+      - 'BCCommand:say Proxy says nice'
+      - 'SPCommand:say pay %player% 1'
+      - 'IRON_INGOT,10'
+ReservedWords:
+  - '%winner%'
+  - '%value%'
+  - '%answer%'
+  - '%word%'
+  - '%gamelength%'

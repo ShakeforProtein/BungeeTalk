@@ -1,0 +1,17 @@
+- /wins top - Displays top {x} players - {x} is set in config.yml
+- /wins stats {PlayerName} - Get your own stats
+- /reload - Live load in the words to use from the words.yml.txt
+- Work on a Bungee level not a spigot level
+- Fastest reaction time (?) this is not something chat reaction does atm
+- Configurable badges for each Game (Reaction / Speed)
+- more than one reward - As in like have a rewards part of a config and it will be one line per reward each one is just a console issued command (Idk how that will go o na bungee level)
+- Set the time in between rounds in config.yml
+- alternate between reaction and speed games
+- Time to win set in config (like how its 30 seconds atm)
+
+
+
+
+- Update checker
+- not needed but full RGB colour support
+- Some SQL for storing the wins

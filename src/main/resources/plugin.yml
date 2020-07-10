@@ -1,0 +1,5 @@
+name: BungeeTalk
+version: ${project.version}
+main: me.shakeforprotein.bungeetalk.BungeeTalk
+description: Lightweight BungeCoord replacement for multiple chat based plugins.
+author: ShakeforProtein
