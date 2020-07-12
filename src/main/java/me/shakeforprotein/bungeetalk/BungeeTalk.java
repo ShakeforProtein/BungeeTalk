@@ -3,6 +3,8 @@ package me.shakeforprotein.bungeetalk;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import me.shakeforprotein.bungeetalk.Commands.CommandBungeeTalk;
+import me.shakeforprotein.bungeetalk.Commands.CommandDisableAnnouncer;
+import me.shakeforprotein.bungeetalk.Commands.CommandDisableChatGames;
 import me.shakeforprotein.bungeetalk.Commands.CommandWins;
 import me.shakeforprotein.bungeetalk.Listeners.GamesListener;
 import me.shakeforprotein.bungeetalk.Listeners.LaunchListener;
@@ -43,6 +45,10 @@ public final class BungeeTalk extends Plugin {
         saveDefaultResource("uuidCache.yml");
         saveDefaultResource("uuidCacheFull.yml");
         config = loadYaml("config.yml");
+        if(config != null) {
+            saveDefaultResource(config.getString("General.GamesMuteFile"));
+            saveDefaultResource(config.getString("Announcer.Settings.MuteFile"));
+        }
         uuidCache = loadYaml("uuidCache.yml");
         uuidCacheFull = loadYaml("uuidCacheFull.yml");
         registerManagers();
@@ -51,6 +57,9 @@ public final class BungeeTalk extends Plugin {
         getProxy().getPluginManager().registerListener(this, new GamesListener(this));
         getProxy().getPluginManager().registerCommand(this, new CommandBungeeTalk(this));
         getProxy().getPluginManager().registerCommand(this, new CommandWins(this));
+        getProxy().getPluginManager().registerCommand(this, new CommandDisableAnnouncer(this));
+        getProxy().getPluginManager().registerCommand(this, new CommandDisableChatGames(this));
+
         reloadConfigs();
     }
 
@@ -61,7 +70,6 @@ public final class BungeeTalk extends Plugin {
     }
 
     private void registerManagers(){
-
         GameManager speedTypistManager = new GameManager(this, "SpeedTypist");
         GameManager unscrambleManager = new GameManager(this, "Unscramble");
         announcer = new AnnounceManager(this);

@@ -39,7 +39,7 @@ public class CommandWins extends Command implements TabExecutor {
                                                     + pl.getConfig().getString("General.Messages.Commands.Wins.Success.DisplayWinsOwn")
                                                     .replace("%wins%", gameLeaderBoard.getInt("Wins." + ((ProxiedPlayer) commandSender).getUniqueId().toString()) + ""))
                                             .replace("%withTime%", pl.getConfig().getString("General.Messages.Commands.Wins.Success.WithTime"))
-                                            .replace("%time%", (gameLeaderBoard.getLong("TopSpeed." + ((ProxiedPlayer) commandSender).getUniqueId().toString()) / 1000) + "");
+                                            .replace("%time%", (gameLeaderBoard.getLong("TopSpeed." + ((ProxiedPlayer) commandSender).getUniqueId().toString()) / 1000.0) + "");
                                     commandSender.sendMessage(msg);
                                 } else {
                                     lastError = "NotPlayer";
@@ -108,14 +108,14 @@ public class CommandWins extends Command implements TabExecutor {
 
                                                 .replace("%wins%", gameLeaderBoard.getInt("Wins." + ((ProxiedPlayer) commandSender).getUniqueId().toString()) + ""))
                                         .replace("%withTime%", pl.getConfig().getString("General.Messages.Commands.Wins.Success.WithTime"))
-                                        .replace("%time%", (gameLeaderBoard.getLong("TopSpeed." + ((ProxiedPlayer) commandSender).getUniqueId().toString()) / 1000) + ""));
+                                        .replace("%time%", (gameLeaderBoard.getLong("TopSpeed." + ((ProxiedPlayer) commandSender).getUniqueId().toString()) / 1000.0) + ""));
 
 
                                 commandSender.sendMessage(ChatColor.translateAlternateColorCodes('&',
                                         pl.getConfig().getString("General.Messages.Commands.Wins.Success.DisplayTopSpeedHeaders")
                                                 .replace("%wins%", gameLeaderBoard.getInt("Wins." + ((ProxiedPlayer) commandSender).getUniqueId().toString()) + "")
                                                 .replace("%withTime%", pl.getConfig().getString("General.Messages.Commands.Wins.Success.WithTime"))
-                                                .replace("%time%", (gameLeaderBoard.getLong("TopSpeed." + ((ProxiedPlayer) commandSender).getUniqueId().toString()) / 1000) + "")));
+                                                .replace("%time%", (gameLeaderBoard.getLong("TopSpeed." + ((ProxiedPlayer) commandSender).getUniqueId().toString()) / 1000.0) + "")));
 
 
                                 int i = 0;

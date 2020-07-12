@@ -3,6 +3,7 @@ package me.shakeforprotein.bungeetalk.Manager;
 import me.shakeforprotein.bungeetalk.BungeeTalk;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.*;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.scheduler.ScheduledTask;
@@ -13,12 +14,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class AnnounceManager {
 
     private Configuration config;
+    private Configuration muteFile;
     private BungeeTalk pl;
     private boolean enabled;
     private long startDelay;
@@ -32,6 +33,7 @@ public class AnnounceManager {
         this.config = pl.loadYaml(pl.getConfig().getString("Announcer.Settings.StringsFilename"));
         this.startDelay = pl.getConfig().getLong("Announcer.Settings.StartOffset");
         this.frequency = pl.getConfig().getLong("Announcer.Settings.Frequency");
+        this.muteFile = pl.loadYaml(pl.getConfig().getString("Announcer.Settings.MuteFile"));
     }
 
     public BaseComponent prepareLinks(String inputKey, ProxiedPlayer receiver) {
@@ -95,8 +97,10 @@ public class AnnounceManager {
 
             String server = config.getString("Messages." + key + ".Server");
             for (ProxiedPlayer player : pl.getProxy().getPlayers()) {
-                if (server.equalsIgnoreCase("All") || server.equalsIgnoreCase(player.getServer().getInfo().getName())) {
-                    player.sendMessage(ChatMessageType.CHAT, prepareLinks(key, player));
+                if(!muteFile.getBoolean("Players." + player.getUniqueId().toString())) {
+                    if (server.equalsIgnoreCase("All") || server.equalsIgnoreCase(player.getServer().getInfo().getName())) {
+                        player.sendMessage(ChatMessageType.CHAT, prepareLinks(key, player));
+                    }
                 }
             }
         }
@@ -133,4 +137,19 @@ public class AnnounceManager {
         return config;
     }
 
+    @SuppressWarnings("deprecation")
+    public void mute(CommandSender sender) {
+        if (sender instanceof ProxiedPlayer) {
+            if (muteFile != null) {
+                if (muteFile.getBoolean("Players." + ((ProxiedPlayer) sender).getUniqueId().toString())) {
+                    muteFile.set("Players." + ((ProxiedPlayer) sender).getUniqueId().toString(), false);
+                    sender.sendMessage(pl.badge + " You will now be able to receive announcements");
+                } else {
+                    muteFile.set("Players." + ((ProxiedPlayer) sender).getUniqueId().toString(), true);
+                    sender.sendMessage(pl.badge + " You will no longer receive announcements");
+                }
+                pl.saveYaml(muteFile, pl.getConfig().getString("Announcer.Settings.MuteFile"));
+            }
+        }
+    }
 }

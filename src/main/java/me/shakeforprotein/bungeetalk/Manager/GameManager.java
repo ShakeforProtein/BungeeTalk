@@ -4,6 +4,7 @@ import com.google.common.primitives.Chars;
 import me.shakeforprotein.bungeetalk.BungeeTalk;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -21,6 +22,7 @@ public class GameManager {
     private BungeeTalk pl;
     private boolean enabled;
     private Configuration gameConfiguration;
+    private Configuration muteFile;
     private String badge;
     private List<String> rewards;
     private List<String> wordList = new ArrayList<>();
@@ -53,6 +55,7 @@ public class GameManager {
         this.leaderBoardFile = pl.getConfig().getString("Games." + gameMode + ".leaderBoardFile");
         this.frequency = pl.getConfig().getLong("Games." + gameMode + ".Settings.Frequency");
         this.startDelay = pl.getConfig().getLong("Games." + gameMode + ".Settings.StartOffset");
+        this.muteFile = pl.loadYaml(pl.getConfig().getString("General.GamesMuteFile"));
         if (gameConfiguration != null && gameConfiguration.get("Phrases") != null) {
             this.wordList = gameConfiguration.getStringList("Phrases");
         } else {
@@ -62,19 +65,19 @@ public class GameManager {
     }
 
     public boolean checkGame(ProxiedPlayer sender, String message) {
-            if (enabled && gameIsRunning) {
-                if (message.equalsIgnoreCase(answer)) {
-                    winner = sender.getName();
-                    gameLength = System.currentTimeMillis() - gameStarted;
-                    pl.rewardPlayer(this, sender.getName());
-                    updateStatistic("Wins");
-                    updateStatistic("TopSpeed");
-                    announceWinner(this);
-                    gameIsRunning = false;
-                    pl.saveYaml(pl.getUuidCache(), "uuidCache.yml");
-                    return true;
-                }
+        if (enabled && gameIsRunning) {
+            if (message.equalsIgnoreCase(answer)) {
+                winner = sender.getName();
+                gameLength = System.currentTimeMillis() - gameStarted;
+                pl.rewardPlayer(this, sender.getName());
+                updateStatistic("Wins");
+                updateStatistic("TopSpeed");
+                announceWinner(this);
+                gameIsRunning = false;
+                pl.saveYaml(pl.getUuidCache(), "uuidCache.yml");
+                return true;
             }
+        }
         return false;
     }
 
@@ -150,19 +153,20 @@ public class GameManager {
         this.enabled = enabled;
     }
 
-    public void start(){
+    public void start() {
         newRoundTimer = pl.getProxy().getScheduler().schedule(pl, () -> {
-            if(enabled) {
+            if (enabled) {
                 if (ProxyServer.getInstance().getPlayers().size() >= pl.getConfig().getInt("Games." + gameMode + ".Settings.MinimumPlayers")) {
                     runGame();
                 }
             } else {
-                newRoundTimer.cancel();}
+                newRoundTimer.cancel();
+            }
         }, startDelay, frequency, TimeUnit.SECONDS);
     }
 
-    private void stop(){
-        if(newRoundTimer != null) {
+    private void stop() {
+        if (newRoundTimer != null) {
             newRoundTimer.cancel();
         }
     }
@@ -183,7 +187,7 @@ public class GameManager {
             this.wordList = gameConfiguration.getStringList("Phrases");
         }
         stop();
-        if(enabled){
+        if (enabled) {
             start();
         }
         pl.getLogger().info("Reloaded all values for manager: " + gameMode);
@@ -205,7 +209,9 @@ public class GameManager {
         setGameStarted(System.currentTimeMillis());
 
         for (ProxiedPlayer p : ProxyServer.getInstance().getPlayers()) {
-            p.sendMessage(ChatMessageType.CHAT, new ComponentBuilder(convertString(pl.getConfig().getString("Games." + gameMode + ".Messages.Badge") + pl.getConfig().getString("Games." + gameMode + ".Messages.GameStart"))).create());
+            if (!muteFile.getBoolean("Players." + p.getUniqueId().toString())) {
+                p.sendMessage(ChatMessageType.CHAT, new ComponentBuilder(convertString(pl.getConfig().getString("Games." + gameMode + ".Messages.Badge") + pl.getConfig().getString("Games." + gameMode + ".Messages.GameStart"))).create());
+            }
         }
 
         try {
@@ -222,7 +228,7 @@ public class GameManager {
                 currentRoundTimer.cancel();
             } catch (NullPointerException ex) {//do nothing
             }
-        }, pl.getConfig().getInt("Games." + gameMode+ ".Settings.GameLength"), TimeUnit.SECONDS);
+        }, pl.getConfig().getInt("Games." + gameMode + ".Settings.GameLength"), TimeUnit.SECONDS);
     }
 
     private String shuffleWord(String word) {
@@ -232,15 +238,23 @@ public class GameManager {
     }
 
     private void announceWinner(GameManager manager) {
-        pl.getProxy().broadcast(new ComponentBuilder(convertString("" + manager.getBadge() + " " + manager.getWinMessage())).create());
+        for (ProxiedPlayer player : pl.getProxy().getPlayers()) {
+            if (muteFile.getBoolean("Players." + ( player).getUniqueId().toString())) {
+                player.sendMessage(new ComponentBuilder(convertString("" + manager.getBadge() + " " + manager.getWinMessage())).create());
+            }
+        }
     }
 
     private void announceNoWinner(GameManager manager) {
-        pl.getProxy().broadcast(new ComponentBuilder(convertString("" + manager.getBadge() + " " + manager.getNoWinnerMessage())).create());
+        for (ProxiedPlayer player : pl.getProxy().getPlayers()) {
+            if (muteFile.getBoolean("Players." + (player).getUniqueId().toString())) {
+                player.sendMessage(new ComponentBuilder(convertString("" + manager.getBadge() + " " + manager.getNoWinnerMessage())).create());
+            }
+        }
     }
 
     private String convertString(String input) {
-        return ChatColor.translateAlternateColorCodes('&', input.replace("%winner%", getWinner()).replace("%value%", (getGameLength()/1000.0) + " Seconds").replace("%answer%", getAnswer()).replace("%word%", getWord()).replace("%gameLength%", pl.getConfig().getString("Games." + getGameLength() + ".Settings.GameLength")));
+        return ChatColor.translateAlternateColorCodes('&', input.replace("%winner%", getWinner()).replace("%value%", (getGameLength() / 1000.0) + " Seconds").replace("%answer%", getAnswer()).replace("%word%", getWord()).replace("%gameLength%", pl.getConfig().getString("Games." + getGameLength() + ".Settings.GameLength")));
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -259,6 +273,26 @@ public class GameManager {
             pl.saveYaml(leaderBoard, getLeaderBoardFile());
         } catch (NullPointerException ex) {
             pl.getLogger().info("Null pointer occurred when checking if stat exists.");
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    public void mute(CommandSender sender) {
+        if (sender instanceof ProxiedPlayer) {
+            if (muteFile != null) {
+                if (muteFile.getBoolean("Players." + ((ProxiedPlayer) sender).getUniqueId().toString())) {
+                    muteFile.set("Players." + ((ProxiedPlayer) sender).getUniqueId().toString(), false);
+                    for(GameManager gameManager : pl.registeredGames) {
+                        sender.sendMessage(pl.badge + "You will no longer see " + gameManager.getGameMode() + " games.");
+                    }
+                } else {
+                    muteFile.set("Players." + ((ProxiedPlayer) sender).getUniqueId().toString(), true);
+                    for(GameManager gameManager : pl.registeredGames) {
+                        sender.sendMessage(pl.badge + "You will now see " + gameManager.getGameMode() + " games.");
+                    }
+                }
+                pl.saveYaml(muteFile, pl.getConfig().getString("General.GamesMuteFile"));
+            }
         }
     }
 }
