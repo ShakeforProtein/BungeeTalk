@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class AnnounceManager {
@@ -33,7 +34,7 @@ public class AnnounceManager {
         this.frequency = pl.getConfig().getLong("Announcer.Settings.Frequency");
     }
 
-    private BaseComponent prepareLinks(String inputKey, ProxiedPlayer receiver) {
+    public BaseComponent prepareLinks(String inputKey, ProxiedPlayer receiver) {
         String input = config.getString("Messages." + inputKey + ".Text");
         input = input.replace("%PLAYER_NAME%", receiver.getName());
         input = input.replace("%SERVER%", receiver.getServer().getInfo().getName());
@@ -106,9 +107,12 @@ public class AnnounceManager {
         this.config = pl.loadYaml(pl.getConfig().getString("Announcer.Settings.StringsFilename"));
         this.startDelay = pl.getConfig().getLong("Announcer.Settings.StartOffset");
         this.frequency = pl.getConfig().getLong("Announcer.Settings.Frequency");
+        stop();
+        start();
     }
 
     public void start() {
+        stop();
         announcerTask = pl.getProxy().getScheduler().schedule(pl, () -> {
             if (pl.getConfig().getBoolean("Announcer.Settings.Enabled")) {
                 doAnnouncement();

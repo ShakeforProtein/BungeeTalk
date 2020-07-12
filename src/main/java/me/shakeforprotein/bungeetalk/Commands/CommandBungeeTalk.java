@@ -2,6 +2,7 @@ package me.shakeforprotein.bungeetalk.Commands;
 
 import me.shakeforprotein.bungeetalk.BungeeTalk;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.TabExecutor;
 import net.md_5.bungee.config.Configuration;
@@ -44,6 +45,8 @@ public class CommandBungeeTalk extends Command implements TabExecutor {
                     } else {
                         commandSender.sendMessage(pl.badge + "File conversion unsuccessful");
                     }
+                } else if(args[0].equalsIgnoreCase("parse") && commandSender instanceof ProxiedPlayer){
+                    commandSender.sendMessage(pl.announcer.prepareLinks(args[1], (ProxiedPlayer) commandSender));
                 }
             }
         }

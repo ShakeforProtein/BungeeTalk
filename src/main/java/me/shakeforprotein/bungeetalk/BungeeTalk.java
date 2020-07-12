@@ -20,6 +20,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class BungeeTalk extends Plugin {
 
@@ -29,7 +31,9 @@ public final class BungeeTalk extends Plugin {
     private Configuration uuidCache;
 
     private Configuration uuidCacheFull;
-    private AnnounceManager announcer;
+    public AnnounceManager announcer;
+
+    private static final Pattern pattern = Pattern.compile("(?<!\\\\)(#[a-fA-F0-9]{6})");
 
     @Override
     public void onEnable() {
@@ -208,6 +212,18 @@ public final class BungeeTalk extends Plugin {
         out.writeUTF(subChannel); // the channel could be whatever you want
         out.writeUTF(data1); // this data could be whatever you want
         server.getInfo().sendData("bungeetalk:channel", out.toByteArray()); // we send the data to the server
+    }
+
+
+    public static String format(String message) {
+        Matcher matcher = pattern.matcher(message);
+
+        while (matcher.find()) {
+            String color = message.substring(matcher.start(), matcher.end());
+            message = message.replace(color, "" + ChatColor.of(color));
+        }
+
+        return message;
     }
 
 
