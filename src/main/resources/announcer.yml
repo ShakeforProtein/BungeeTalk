@@ -1,0 +1,22 @@
+Messages:
+  ExampleMessage1:
+    Server: 'All'
+    Text: 'Bla bla %link% bla bla %link%'
+  ExampleMessage2:
+    Server: 'Survival'
+    Text:
+Effects:
+  link0:
+    HoverText:
+    Type: 'RUN_COMMAND'
+    Text: ''
+    Value: ''
+  Bob:
+    Type: 'SUGGEST_COMMAND'
+    Text: ''
+    Value: ''
+  Link2:
+    TYPE: 'OPEN_URL'
+    Text: 'Click me to open URL'
+    Value: ''
+ReservedPlaceholders:

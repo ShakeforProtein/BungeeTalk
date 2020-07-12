@@ -32,7 +32,7 @@ public class CommandBungeeTalk extends Command implements TabExecutor {
                     }
                     pl.saveYaml(pl.getConfig(), "config.yml");
                     commandSender.sendMessage(pl.badge + "Default files have been written (This command will not overwrite an existing file)");
-                } else if (args[0].equalsIgnoreCase("version")){
+                } else if (args[0].equalsIgnoreCase("version")) {
                     commandSender.sendMessage(pl.badge + "Version: " + pl.getDescription().getVersion() + ", Written by: " + pl.getDescription().getAuthor() + ", for Treebo Minecraft");
                 }
             } else if (args.length == 2) {

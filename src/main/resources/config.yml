@@ -4,13 +4,13 @@ General:
     Commands:
       Wins:
         Success:
-          DisplayWinsOwn: 'You have a total of %wins% in this game mode %withtime% %time%!'
-          DisplayWinsOther: '%other% has won %wins% times %withtime% %time%'
+          DisplayWinsOwn: 'You have a total of %wins% in this game mode %withTime% %time%!'
+          DisplayWinsOther: '%other% has won %wins% times %withTime% %time%'
           DisplayFastestOwn: 'Your fastest time was: %time%'
           DisplayFastestOther: '%other%''s fastest completion time was: %time$'
           DisplayTopWinsTitle: 'Top 10 by total wins'
           DisplayTopWinsHeaders: '[Rank] - [Player]     - [Total Wins] -    [Best Time]'
-          DisplayTopWinsFormat: '$position% - %other% - Total Wins: %wins% - Best Time: %time%'
+          DisplayTopWinsFormat: '%position% - %other% - Total Wins: %wins% - Best Time: %time%'
           DisplayTopSpeed: 'Top 10 by speed'
           DisplayTopSoeedHeaders: '[Rank] - [Player]     - [Best Time] -    [Total Wins]'
           DisplayTopSpeedFormat: '$position% - %other% - Best Time: %time% - Total Wins: %wins%'
@@ -19,20 +19,21 @@ General:
           NotPlayer: 'This command requires additional arguments to use from console.'
           NoManager: 'Unable to determine game manager for Game mode:'
           MissingConfig: 'Unable to find config for Game mode:'
-          NoLeaderboard: 'Unable to locate leaderboard for Game mode:'
+          NoLeaderboard: 'Unable to locate LeaderBoard for Game mode:'
           UnknownGameMode: 'Unknown Game Mode:'
-          ReadError: 'Unable to obtain leaderboard values'
+          ReadError: 'Unable to obtain LeaderBoard values'
           IncorrectUsage: 'Unable to determine what values you were looking for.'
 Games:
   Unscramble:
     Filename: 'unscramble.yml'
-    LeaderboardFile: 'unscrambleLeaderboard.yml'
+    LeaderBoardFile: 'unscrambleLeaderBoard.yml'
     Messages:
       Badge: '&3&l[&2Shake Scramble&3&l]&r'
       Winner: '%winner% has won, with a time of %value%'
-      NoWinner: 'Nobody typed the word %answer% fast enough.'
-      GameStart: 'is starting, first to unscramble &c%word% &rwins!! You have %gamelength% seconds!'
+      NoWinner: 'Nobody typed the phrase %answer% fast enough.'
+      GameStart: 'is starting, first to unscramble &c%word%&r wins!! You have %gameLength% seconds!'
     Settings:
+      Enabled: true
       GameLength: 30
       Frequency: 900
       StartOffset: 600
@@ -41,15 +42,16 @@ Games:
       - 'BCCommand:say Proxy says nice'
       - 'SPCommand:say pay %player% 1'
       - 'IRON_INGOT,10'
-  SpeedTyper:
-    Filename: 'speedTyper.yml'
-    LeaderboardFile: 'speedTyperLeaderboard.yml'
+  SpeedTypist:
+    Filename: 'speedTypist.yml'
+    LeaderBoardFile: 'speedTypistLeaderBoard.yml'
     Messages:
-      Badge: '&3&l[&Treebo Typer&3&l]&r'
+      Badge: '&3&l[&2Treebo Typist&3&l]&r'
       Winner: '%winner% has won, with a time of %value%'
-      NoWinner: 'Nobody typed the word %answer% fast enough.'
-      GameStart: 'is starting, first to type &c%word% &rwins!! You have %gamelength% seconds!'
+      NoWinner: 'Nobody typed the phrase %answer% fast enough.'
+      GameStart: 'is starting, first to type &c%word%&r wins!! You have %gameLength% seconds!'
     Settings:
+      Enabled: true
       GameLength: 30
       Frequency: 900
       StartOffset: 300
@@ -58,9 +60,15 @@ Games:
       - 'BCCommand:say Proxy says nice'
       - 'SPCommand:say pay %player% 1'
       - 'IRON_INGOT,10'
+Announcer:
+  Settings:
+    Enabled: true
+    Frequency: 900
+    StartOffset: 0
+    StringsFilename: 'announcer.yml'
 ReservedWords:
   - '%winner%'
   - '%value%'
   - '%answer%'
   - '%word%'
-  - '%gamelength%'
+  - '%gameLength%'

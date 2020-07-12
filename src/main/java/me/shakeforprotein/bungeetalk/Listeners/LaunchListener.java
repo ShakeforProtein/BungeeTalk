@@ -2,6 +2,7 @@ package me.shakeforprotein.bungeetalk.Listeners;
 
 import me.shakeforprotein.bungeetalk.BungeeTalk;
 import net.md_5.bungee.api.event.ChatEvent;
+import net.md_5.bungee.api.event.LoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
@@ -19,7 +20,14 @@ public class LaunchListener implements Listener {
         if(!tasksRunning){
             System.out.println("Delayed tasks not initiated");
             tasksRunning = true;
-            pl.startRunnables();
+            pl.startTasks();
+        }
+    }
+
+    @EventHandler
+    public void PlayerJoin(LoginEvent e){
+        if(e.getConnection().isOnlineMode()){
+            pl.getUuidCacheFull().set("Players." + e.getConnection().getUniqueId().toString(), e.getConnection().getName());
         }
     }
 }
