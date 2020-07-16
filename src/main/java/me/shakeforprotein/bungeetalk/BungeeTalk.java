@@ -1,18 +1,13 @@
 package me.shakeforprotein.bungeetalk;
 
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
-import me.shakeforprotein.bungeetalk.Commands.CommandBungeeTalk;
-import me.shakeforprotein.bungeetalk.Commands.CommandDisableAnnouncer;
-import me.shakeforprotein.bungeetalk.Commands.CommandDisableChatGames;
-import me.shakeforprotein.bungeetalk.Commands.CommandWins;
+import me.shakeforprotein.bungeetalk.Commands.*;
 import me.shakeforprotein.bungeetalk.Listeners.GamesListener;
 import me.shakeforprotein.bungeetalk.Listeners.LaunchListener;
 import me.shakeforprotein.bungeetalk.Manager.AnnounceManager;
 import me.shakeforprotein.bungeetalk.Manager.GameManager;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.connection.Server;
+import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
@@ -22,8 +17,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public final class BungeeTalk extends Plugin {
 
@@ -31,11 +24,11 @@ public final class BungeeTalk extends Plugin {
     public String badge = ChatColor.translateAlternateColorCodes('&', "&3&l[&2BungeeTalk&3&l]&r");
     private Configuration config;
     private Configuration uuidCache;
-
     private Configuration uuidCacheFull;
+
     public AnnounceManager announcer;
 
-    private static final Pattern pattern = Pattern.compile("(?<!\\\\)(#[a-fA-F0-9]{6})");
+    //private static final Pattern pattern = Pattern.compile("(?<!\\\\)(#[a-fA-F0-9]{6})");
 
     @Override
     public void onEnable() {
@@ -51,14 +44,15 @@ public final class BungeeTalk extends Plugin {
         }
         uuidCache = loadYaml("uuidCache.yml");
         uuidCacheFull = loadYaml("uuidCacheFull.yml");
+
         registerManagers();
 
         getProxy().getPluginManager().registerListener(this, new LaunchListener(this));
         getProxy().getPluginManager().registerListener(this, new GamesListener(this));
         getProxy().getPluginManager().registerCommand(this, new CommandBungeeTalk(this));
         getProxy().getPluginManager().registerCommand(this, new CommandWins(this));
-        getProxy().getPluginManager().registerCommand(this, new CommandDisableAnnouncer(this));
-        getProxy().getPluginManager().registerCommand(this, new CommandDisableChatGames(this));
+        getProxy().getPluginManager().registerCommand(this, new CommandToggleAnnouncer(this));
+        getProxy().getPluginManager().registerCommand(this, new CommandToggleChatGames(this));
 
         reloadConfigs();
     }
@@ -196,44 +190,33 @@ public final class BungeeTalk extends Plugin {
     }
 
     public void rewardPlayer(GameManager manager, String playerName) {
-        int rand = ThreadLocalRandom.current().nextInt(0, manager.getRewards().size() - 1);
+        int rand = ThreadLocalRandom.current().nextInt(0, manager.getRewards().size());
         String reward = manager.getRewards().get(rand).replace("%player%", playerName);
         if (reward.toLowerCase().startsWith("bccommand:")) {
             getProxy().getPluginManager().dispatchCommand(getProxy().getConsole(), reward.split(":")[1]);
 
         } else if (reward.toLowerCase().startsWith("spcommand:")) {
             if (getProxy().getPlayer(playerName) != null) {
-                sendCustomData(getProxy().getPlayer(playerName).getServer(), "execute", reward.split(":")[1]);
+                System.out.println("Was a spigot command");
+                sendCustomData(getProxy().getPlayer(playerName).getServer().getInfo(), "bungeetalk", reward);
             }
         } else if (reward.toLowerCase().startsWith("somethingElse:")) {
-            sendCustomData(getProxy().getPlayer(playerName).getServer(), "somethingElse", reward.split(":")[1]);
+            sendCustomData(getProxy().getPlayer(playerName).getServer().getInfo(), "somethingElse", reward.split(":")[1]);
         }
     }
 
 
-    @SuppressWarnings("UnstableApiUsage")
-    private void sendCustomData(Server server, String subChannel, String data1) {
-        if (getProxy().getPlayers() == null || getProxy().getPlayers().isEmpty()) {
-            return;
+    private void sendCustomData(ServerInfo server, String subChannel, String message){
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        DataOutputStream output = new DataOutputStream(bytes);
+        try{
+            output.writeUTF(subChannel);
+            output.writeUTF(message);
+        }catch(IOException e){
+            e.printStackTrace();
         }
-        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        out.writeUTF(subChannel); // the channel could be whatever you want
-        out.writeUTF(data1); // this data could be whatever you want
-        server.getInfo().sendData("bungeetalk:channel", out.toByteArray()); // we send the data to the server
+        server.sendData("BungeeCord", bytes.toByteArray());
     }
-
-
-    public static String format(String message) {
-        Matcher matcher = pattern.matcher(message);
-
-        while (matcher.find()) {
-            String color = message.substring(matcher.start(), matcher.end());
-            message = message.replace(color, "" + ChatColor.of(color));
-        }
-
-        return message;
-    }
-
 
     public Configuration getUuidCache() {
         return uuidCache;

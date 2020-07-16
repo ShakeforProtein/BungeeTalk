@@ -28,7 +28,7 @@ public class GamesListener implements Listener {
         }
         if(!postMessage){
             if(e.getSender() instanceof ProxiedPlayer){
-                pl.getUuidCache().set("Players." +((ProxiedPlayer) e.getSender()).getUniqueId().toString(), ((ProxiedPlayer) e.getSender()).getName());
+                pl.getUuidCache().set("Players." +((ProxiedPlayer) e.getSender()).getUniqueId().toString(), ((ProxiedPlayer) e.getSender()).getDisplayName());
             }
             e.setCancelled(true);
         }

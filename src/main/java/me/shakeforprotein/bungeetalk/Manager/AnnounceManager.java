@@ -39,6 +39,7 @@ public class AnnounceManager {
     public BaseComponent prepareLinks(String inputKey, ProxiedPlayer receiver) {
         String input = config.getString("Messages." + inputKey + ".Text");
         input = input.replace("%PLAYER_NAME%", receiver.getName());
+        input = input.replace("%PLAYER_DISPLAY_NAME%", receiver.getName());
         input = input.replace("%SERVER%", receiver.getServer().getInfo().getName());
         input = input.replace("%MOTD%", receiver.getServer().getInfo().getMotd());
         input = input.replace("%BADGE%", pl.badge);
@@ -53,6 +54,7 @@ public class AnnounceManager {
                 if (config.getSection("Effects").getKeys().contains(parts.get(i))) {
                     String inText = ChatColor.translateAlternateColorCodes('&', config.getString("Effects." + parts.get(i) + ".Text"));
                     inText = inText.replace("%PLAYER_NAME%", receiver.getName());
+                    inText = inText.replace("%PLAYER_DISPLAY_NAME%", receiver.getDisplayName());
                     inText = inText.replace("%SERVER%", receiver.getServer().getInfo().getName());
                     inText = inText.replace("%MOTD%", receiver.getServer().getInfo().getMotd());
                     inText = inText.replace("%BADGE%", pl.badge);

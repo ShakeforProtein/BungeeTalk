@@ -2,7 +2,19 @@ General:
   GamesMuteFile: 'SquelchGames.yml'
   Messages:
     Badge: "&3&l[&2BungeeTalk&3&l]&r"
+    JoinMessages:
+      - '%playerName% has joined with uuid %uuid% using version %version%'
+      - '%playerName% has graced us with their presence.'
+    LeaveMessages:
+      - '&c%playerName%&t has connected to the outernet.'
+      - '&c%plsyerNsmr%&r&e has left the cult.'
+    ServerTransferMessages:
+      - '&c&l%playerName% &a-&e&l %fromServer% >> %toServer%'
     Commands:
+      Squelch:
+        PlayerNotFound: 'Player %target% is not online'
+        IncorrectArgsLength: 'This command requires a single PlayerName argument.'
+        BlockedMessage: '&cBlocked incoming message from %sender%'
       Wins:
         Success:
           DisplayWinsOwn: 'You have a total of %wins% in this game mode %withTime% %time%!'
@@ -41,8 +53,7 @@ Games:
       MinimumPlayers: 2
     Rewards:
       - 'BCCommand:say Proxy says nice'
-      - 'SPCommand:say pay %player% 1'
-      - 'IRON_INGOT,10'
+      - 'SPCommand:pay %player% 1'
   SpeedTypist:
     Filename: 'speedTypist.yml'
     LeaderBoardFile: 'speedTypistLeaderBoard.yml'
@@ -59,8 +70,7 @@ Games:
       MinimumPlayers: 2
     Rewards:
       - 'BCCommand:say Proxy says nice'
-      - 'SPCommand:say pay %player% 1'
-      - 'IRON_INGOT,10'
+      - 'SPCommand:pay %player% 1'
 Announcer:
   Settings:
     Enabled: true

@@ -5,12 +5,12 @@ import me.shakeforprotein.bungeetalk.Manager.GameManager;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.plugin.Command;
 
-public class CommandDisableChatGames extends Command {
+public class CommandToggleChatGames extends Command {
 
     private BungeeTalk pl;
 
-    public CommandDisableChatGames(BungeeTalk main) {
-        super("disablechatgames");
+    public CommandToggleChatGames(BungeeTalk main) {
+        super("togglechatgames");
         this.pl = main;
     }
 

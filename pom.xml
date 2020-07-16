@@ -6,12 +6,12 @@
 
     <groupId>me.ShakeforProtein</groupId>
     <artifactId>BungeeTalk</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
     <packaging>jar</packaging>
 
     <name>BungeeTalk</name>
 
-    <description>Lightweight BungeCoord replacement for multiple chat based plugins.</description>
+    <description>Lightweight BungeeCord replacement for multiple chat based plugins.</description>
     <properties>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

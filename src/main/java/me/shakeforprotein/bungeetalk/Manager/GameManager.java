@@ -67,7 +67,7 @@ public class GameManager {
     public boolean checkGame(ProxiedPlayer sender, String message) {
         if (enabled && gameIsRunning) {
             if (message.equalsIgnoreCase(answer)) {
-                winner = sender.getName();
+                winner = sender.getDisplayName();
                 gameLength = System.currentTimeMillis() - gameStarted;
                 pl.rewardPlayer(this, sender.getName());
                 updateStatistic("Wins");
@@ -239,7 +239,7 @@ public class GameManager {
 
     private void announceWinner(GameManager manager) {
         for (ProxiedPlayer player : pl.getProxy().getPlayers()) {
-            if (muteFile.getBoolean("Players." + ( player).getUniqueId().toString())) {
+            if (!muteFile.getBoolean("Players." + ( player).getUniqueId().toString())) {
                 player.sendMessage(new ComponentBuilder(convertString("" + manager.getBadge() + " " + manager.getWinMessage())).create());
             }
         }
@@ -247,14 +247,14 @@ public class GameManager {
 
     private void announceNoWinner(GameManager manager) {
         for (ProxiedPlayer player : pl.getProxy().getPlayers()) {
-            if (muteFile.getBoolean("Players." + (player).getUniqueId().toString())) {
+            if (!muteFile.getBoolean("Players." + (player).getUniqueId().toString())) {
                 player.sendMessage(new ComponentBuilder(convertString("" + manager.getBadge() + " " + manager.getNoWinnerMessage())).create());
             }
         }
     }
 
     private String convertString(String input) {
-        return ChatColor.translateAlternateColorCodes('&', input.replace("%winner%", getWinner()).replace("%value%", (getGameLength() / 1000.0) + " Seconds").replace("%answer%", getAnswer()).replace("%word%", getWord()).replace("%gameLength%", pl.getConfig().getString("Games." + getGameLength() + ".Settings.GameLength")));
+        return ChatColor.translateAlternateColorCodes('&', input.replace("%winner%", getWinner()).replace("%value%", (getGameLength() / 1000.0) + " Seconds").replace("%answer%", getAnswer()).replace("%word%", getWord()).replace("%gameLength%", pl.getConfig().getInt("Games." + gameMode + ".Settings.GameLength") + ""));
     }
 
     @SuppressWarnings("ConstantConditions")
